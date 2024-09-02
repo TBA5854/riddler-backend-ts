@@ -1,0 +1,23 @@
+import express from 'express';
+import cookieParser from "cookie-parser";
+import authRouter from '../routes/authRoute.mjs';
+import adminRouter from '../routes/adminRoute.mjs';
+import teamRouter from '../routes/teamRoute.mjs';
+import userRouter from '../routes/userRoute.mjs';
+import { connectDB } from "../helpers/dbController.js";
+import { authverify } from '../middleware/authMiddleware.mjs';
+import { config } from "dotenv";
+const app = express();
+config();
+app.use(express.json());
+app.use(cookieParser());
+app.use(authRouter);
+app.use(teamRouter);
+app.use(adminRouter);
+app.use(userRouter);
+connectDB();
+const port = 3000;
+app.get('/', authverify, (_req, res) => {
+    res.send('Hello World!');
+});
+app.listen(port, () => console.log(`Auth Server port ${port}!`));
